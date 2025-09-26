@@ -1,6 +1,8 @@
 // src/main/java/com/daengdaengrun/daengdaengrunbackend/user/User.java
-package com.daengdaengrun.daengdaengrunbackend.user;
+package com.daengdaengrun.daengdaengrunbackend.user.entity;
 
+import com.daengdaengrun.daengdaengrunbackend.user.UserRole;
+import com.daengdaengrun.daengdaengrunbackend.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
