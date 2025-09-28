@@ -4,10 +4,7 @@ package com.daengdaengrun.daengdaengrunbackend.user.entity;
 import com.daengdaengrun.daengdaengrunbackend.user.UserRole;
 import com.daengdaengrun.daengdaengrunbackend.user.UserStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,6 +16,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class) // 생성/수정 시간을 자동으로 관리하도록 설정
+@Builder // 원래 아래에 User 메소드가 아닌 이 곳에 둔 이유는 매개변수로 받는 거 아니더라도 에러가 안생기게
+@AllArgsConstructor // 모든 필드를 인자로 받는 생성자를 자동으로 만듭니다. (클래스 레벨 @Builder에 필요)
 public class User {
 
     @Id
@@ -54,12 +53,16 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Builder
     public User(String email, String password, String nickname) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.role = UserRole.USER; // 기본 역할은 USER로 설정
         this.status = UserStatus.ACTIVE; // 기본 상태는 ACTIVE로 설정
+    }
+
+    public void updateProfile(String nickname, String profileImageUrl) {
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
     }
 }
