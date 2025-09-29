@@ -1,6 +1,7 @@
 package com.daengdaengrun.daengdaengrunbackend.auth.dto;
 
 import com.daengdaengrun.daengdaengrunbackend.user.UserRole;
+import com.daengdaengrun.daengdaengrunbackend.user.UserStatus;
 import com.daengdaengrun.daengdaengrunbackend.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,6 +64,7 @@ public class OAuthAttributes {
                 .password(UUID.randomUUID().toString())
                 .profileImageUrl(picture)
                 .role(UserRole.USER)
+                .status(UserStatus.ACTIVE)
                 .build();
     }
 
