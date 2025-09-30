@@ -1,5 +1,6 @@
 package com.daengdaengrun.daengdaengrunbackend.user.controller;
 
+import com.daengdaengrun.daengdaengrunbackend.global.error.dto.ApiResponseDto;
 import com.daengdaengrun.daengdaengrunbackend.user.dto.UserSignupRequestDto;
 import com.daengdaengrun.daengdaengrunbackend.user.service.UserService;
 import jakarta.validation.Valid;
@@ -18,8 +19,8 @@ public class UserController {
     private final UserService userService;
     
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@Valid @RequestBody UserSignupRequestDto requestDto) {
+    public ResponseEntity<ApiResponseDto<Void>> signup(@Valid @RequestBody UserSignupRequestDto requestDto) {
         userService.signup(requestDto);
-        return ResponseEntity.ok("회원가입이 성공적으로 완료되었습니다.");
+        return ResponseEntity.ok(new ApiResponseDto<>(null, "회원가입이 성공적으로 완료되었습니다."));
     }
 }
