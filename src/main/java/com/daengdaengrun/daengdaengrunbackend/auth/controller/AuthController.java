@@ -4,7 +4,11 @@ import com.daengdaengrun.daengdaengrunbackend.auth.dto.LoginRequestDto;
 import com.daengdaengrun.daengdaengrunbackend.auth.service.AuthService;
 import com.daengdaengrun.daengdaengrunbackend.global.error.dto.ApiResponseDto;
 import com.daengdaengrun.daengdaengrunbackend.global.error.dto.LoginResponseDto;
+import com.daengdaengrun.daengdaengrunbackend.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +20,7 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
-
+    private final UserService userService;
     /**
      * 이메일/비밀번호 기반 로그인 API
      * @param loginRequestDto 이메일과 비밀번호를 담은 DTO
@@ -50,5 +54,23 @@ public class AuthController {
             authService.resetPassword(token, body.get("newPassword"));
             return ResponseEntity.ok(new ApiResponseDto<>(null, "비밀번호가 성공적으로 변경되었습니다."));
     }
+
+    /**
+     * 로그아웃 처리
+     * @param request HttpServletRequest: 헤더에서 토큰을 추출하기 위해 필요
+     * @return 성공 메시지
+     */
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponseDto<Void>> logout(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String accessToken = authHeader.substring(7);
+            authService.logout(accessToken);
+        }
+        //2. ApiResponseDto를 사용하여 응답 반환
+        return ResponseEntity.ok(new ApiResponseDto<>(null, "로그아웃 되었습니다."));
+    }
+
 }
 

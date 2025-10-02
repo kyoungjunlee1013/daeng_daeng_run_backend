@@ -9,6 +9,7 @@ import com.daengdaengrun.daengdaengrunbackend.auth.security.PrincipalDetailsServ
 import com.daengdaengrun.daengdaengrunbackend.auth.service.CustomOAuth2UserService;
 import com.daengdaengrun.daengdaengrunbackend.global.jwt.JwtAuthenticationFilter;
 import com.daengdaengrun.daengdaengrunbackend.global.jwt.JwtUtil;
+import com.daengdaengrun.daengdaengrunbackend.global.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +32,7 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final JwtUtil jwtUtil;
     private final PrincipalDetailsService principalDetailsService;
-
+    private final RedisUtil redisUtil;
     // 3. Bean 등록: 프로젝트 전역에서 사용할 공용 '부품'들을 만듭니다.
 
     // '비밀번호 암호화' 부품을 만드는 기계
@@ -43,7 +44,7 @@ public class SecurityConfig {
     // 'JWT 문지기 필터' 부품을 만드는 기계
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtil, principalDetailsService);
+        return new JwtAuthenticationFilter(jwtUtil, principalDetailsService, redisUtil);
     }
 
     // 4. securityFilterChain: 실제 보안 규칙을 설정하는 '메인 메소드'

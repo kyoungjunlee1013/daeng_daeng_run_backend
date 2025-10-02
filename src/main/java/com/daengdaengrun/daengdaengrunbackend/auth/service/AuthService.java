@@ -5,11 +5,13 @@ import com.daengdaengrun.daengdaengrunbackend.global.jwt.JwtUtil;
 import com.daengdaengrun.daengdaengrunbackend.global.redis.RedisUtil;
 import com.daengdaengrun.daengdaengrunbackend.user.entity.User;
 import com.daengdaengrun.daengdaengrunbackend.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -90,4 +92,23 @@ public class AuthService {
         // 4. 사용 완료된 토큰은 Redis에서 삭제
         redisUtil.deleteData("RT:" + resetToken);
     }
+    public void logout(String accessToken) {
+        // 1.액세스 토큰 유효성 검증
+        if (!jwtUtil.validateToken(accessToken)) {
+            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+        }
+        // 2.토큰에서 만료 시간(밀리초) 가져오기
+        Long expiration = jwtUtil.getExpiration(accessToken);
+
+        // 3. 현재 시간과의 차이를 계산하여 남은 유효 시간(초) 구하기
+        long now = new Date().getTime();
+        long remainingTime = (expiration - now) / 1000;
+
+        // 4. Redis에 (Key: accessToken, Value: "logout", 만료 시간: 남은 유효 시간)으로 저장
+        //    남은 유효 시간 동안만 블랙리스트에 보관하여, 자연 만료된 토큰이 Redis에 쌓이는 것을 방지합니다.
+        if (remainingTime > 0) {
+            redisUtil.setDataExpire(accessToken, "logout", remainingTime);
+    }
+
 }
+    }

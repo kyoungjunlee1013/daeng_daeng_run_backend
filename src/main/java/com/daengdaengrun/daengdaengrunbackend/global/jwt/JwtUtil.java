@@ -83,4 +83,8 @@ public class JwtUtil {
         }
         return false; // 위에서 예외(Exception)가 발생했다면 유효하지 않은 토큰
     }
+    public Long getExpiration(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration().getTime();
+
+    }
 }
